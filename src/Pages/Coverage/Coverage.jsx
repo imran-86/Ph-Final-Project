@@ -2,7 +2,6 @@ import React, { useRef } from "react";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { useLoaderData } from "react-router";
-import { map } from "leaflet";
 const Coverage = () => {
   const position = [23.685, 90.3563];
 
