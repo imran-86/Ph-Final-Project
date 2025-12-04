@@ -1,15 +1,21 @@
-import React from "react";
+// import React, { use } from "react";
 import { useForm, useWatch } from "react-hook-form";
-import { data, useLoaderData } from "react-router";
+import {   useLoaderData } from "react-router";
 import Swal from "sweetalert2";
+import useAxiosSecure from "../../Hooks/useAxiosSecure";
+import useAuth from "../../Hooks/useAuth"
 
 const SendParcel = () => {
   const {
     register,
     control,
     handleSubmit,
-    formState: { errors },
+    // formState: { errors },
   } = useForm();
+
+  const {user} = useAuth()
+  const axiosSecure = useAxiosSecure();
+
 
   const serviceCenters = useLoaderData();
 
@@ -58,6 +64,8 @@ const SendParcel = () => {
     }
 
     // console.log("Cost ", cost);
+
+    data.cost = cost;
     Swal.fire({
       title: "Agree with the cost?",
       text: `You will be charged ${cost} taka`,
@@ -68,7 +76,14 @@ const SendParcel = () => {
       confirmButtonText: "I agree!",
     }).then((result) => {
       if (result.isConfirmed) {
+         
+        // save the parcel info to the database
 
+        axiosSecure.post('/parcels', data)
+        .then(res =>{
+          console.log('after saving parcel ',res.data);
+          
+        })
 
         
 
@@ -146,6 +161,7 @@ const SendParcel = () => {
 
             <label className="lebel">Sender Name</label>
             <input
+            defaultValue={user?.displayName}
               type="text"
               {...register("senderName")}
               className="input w-full my-2"
@@ -156,6 +172,7 @@ const SendParcel = () => {
 
             <label className="lebel">Sender Email</label>
             <input
+            defaultValue={user?.email}
               type="email"
               {...register("senderEmail")}
               className="input w-full my-2"
